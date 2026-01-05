@@ -153,7 +153,7 @@
         卖出
       </button>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>

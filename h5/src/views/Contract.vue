@@ -182,7 +182,7 @@
         <span>合约交易具有高风险，请谨慎操作</span>
       </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>

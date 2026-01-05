@@ -429,7 +429,7 @@
     </div>
 
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>

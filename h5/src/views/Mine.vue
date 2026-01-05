@@ -1,5 +1,5 @@
 <template>
-  <div class="mine-page">
+  <PageLayout :show-navbar="false" :show-back="false">
     <!-- 固定顶部栏 -->
     <div class="user-header">
       <div class="user-row" @click="goToProfile">
@@ -245,11 +245,12 @@
       <p class="version">Version 2.0.0</p>
     </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import PageLayout from '../components/layout/PageLayout.vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/user'
 import { api } from '../utils/api'
@@ -414,19 +415,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-
-/* 页面容器 */
-.mine-page {
-  width: 100%;
-  max-width: 428px;
-  min-height: 100vh;
-  min-height: 100dvh;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-}
 
 /* 可滚动内容区 */
 .page-content {

@@ -1,7 +1,6 @@
 <template>
-  <div class="trade-page">
-    <!-- 顶部栏 -->
-    <div class="page-header">
+  <PageLayout :show-back="true" :show-navbar="false">
+    <div class="trade-custom-header">
       <button class="back-btn" @click="$router.back()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M15 18l-6-6 6-6"/>
@@ -220,7 +219,6 @@
           <p>暂无订单</p>
         </div>
       </div>
-    </div>
 
     <!-- 杠杆选择弹窗 -->
     <transition name="fade">
@@ -247,7 +245,7 @@
         </div>
       </div>
     </transition>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
@@ -255,6 +253,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { createChart } from 'lightweight-charts'
 import { alert } from '../utils/alert'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const route = useRoute()
 const symbol = ref(route.query.pair?.split('_')[0] || 'BTC')
@@ -645,23 +644,16 @@ watch(() => route.query.pair, (newPair) => {
 </script>
 
 <style scoped>
-.trade-page {
-  width: 100%;
-  max-width: 428px;
-  min-height: 100vh;
-  min-height: 100dvh;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  background: #0B0E11;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.page-header {
-  flex-shrink: 0;
+.trade-custom-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
   display: flex;
   align-items: center;
   padding: 10px 16px;
+  padding-top: calc(10px + env(safe-area-inset-top));
   background: #181A20;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
@@ -735,7 +727,7 @@ watch(() => route.query.pair, (newPair) => {
 .change.down { background: rgba(246, 70, 93, 0.15); }
 
 .page-content {
-  flex: 1;
+  padding-top: calc(56px + env(safe-area-inset-top));
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;

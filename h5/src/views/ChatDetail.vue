@@ -1,5 +1,5 @@
 <template>
-  <div class="chat-detail-page">
+  <PageLayout :show-navbar="false">
     <!-- 聊天头部 -->
     <div class="chat-header">
       <button class="back-btn" @click="$router.back()">
@@ -61,12 +61,13 @@
         </svg>
       </button>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const route = useRoute()
 const messagesContainer = ref(null)
@@ -127,25 +128,18 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.chat-detail-page {
-  width: 100%;
-  max-width: 428px;
-  min-height: 100vh;
-  min-height: 100dvh;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(180deg, #181a20 0%, #131518 50%, #0c0e12 100%);
-  -webkit-tap-highlight-color: transparent;
-}
-
 .chat-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
   display: flex;
   align-items: center;
   padding: 12px 16px;
+  padding-top: calc(12px + env(safe-area-inset-top));
   background: #1a1c20;
   border-bottom: 1px solid rgba(255,255,255,0.06);
-  flex-shrink: 0;
 }
 
 .back-btn {
@@ -192,9 +186,11 @@ onMounted(() => {
 }
 
 .messages-container {
-  flex: 1;
+  min-height: calc(100vh - 120px);
   overflow-y: auto;
   padding: 16px;
+  padding-top: calc(56px + env(safe-area-inset-top));
+  background: linear-gradient(180deg, #181a20 0%, #131518 50%, #0c0e12 100%);
   -webkit-overflow-scrolling: touch;
 }
 

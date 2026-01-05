@@ -1,16 +1,5 @@
 <template>
-  <div class="about-page">
-    <!-- 固定顶部栏 -->
-    <div class="page-header">
-      <button class="back-btn" @click="$router.back()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M15 18l-6-6 6-6"/>
-        </svg>
-      </button>
-      <h1 class="page-title">关于我们</h1>
-      <div class="header-actions"></div>
-    </div>
-
+  <PageLayout title="关于我们" :show-back="true">
     <div class="page-content">
       <!-- Logo和品牌 -->
       <div class="brand-section">
@@ -157,23 +146,19 @@
         <p>© 2024 Ascenda. All rights reserved.</p>
       </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
+import PageLayout from '../components/layout/PageLayout.vue'
 </script>
 
 <style scoped>
-.about-page {
-  width: 100%;
-  max-width: 428px;
-  min-height: 100vh;
-  min-height: 100dvh;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(180deg, #181a20 0%, #131518 50%, #0c0e12 100%);
-  -webkit-tap-highlight-color: transparent;
+.page-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 16px;
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
 }
 
 /* 固定顶部栏 */
@@ -213,12 +198,6 @@
 }
 
 .header-actions { display: flex; gap: 8px; }
-
-.page-content {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: max(24px, env(safe-area-inset-bottom));
-}
 
 .page-content::-webkit-scrollbar { display: none; }
 

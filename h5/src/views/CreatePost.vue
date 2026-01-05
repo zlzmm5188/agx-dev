@@ -1,5 +1,5 @@
 <template>
-  <div class="create-post-page">
+  <PageLayout :show-navbar="false" :show-back="false">
     <!-- 头部 -->
     <div class="page-header">
       <button class="close-btn" @click="$router.back()">
@@ -78,13 +78,14 @@
         </div>
       </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { alert } from '../utils/alert'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const router = useRouter()
 

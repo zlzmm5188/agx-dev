@@ -1,16 +1,5 @@
 <template>
-  <div class="orders-page">
-    <!-- 固定顶部栏 -->
-    <div class="page-header">
-      <button class="back-btn" @click="$router.back()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M15 18l-6-6 6-6"/>
-        </svg>
-      </button>
-      <h1 class="page-title">订单记录</h1>
-      <div class="header-actions"></div>
-    </div>
-
+  <PageLayout title="订单记录" :show-back="true">
     <div class="page-content">
       <!-- 订单类型筛选 -->
       <div class="order-tabs">
@@ -75,11 +64,12 @@
         <p>暂无订单记录</p>
       </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const activeTab = ref('all')
 const activeStatus = ref('all')

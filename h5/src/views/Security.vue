@@ -1,14 +1,5 @@
 <template>
-  <div class="security-page">
-    <!-- 固定顶部栏 -->
-    <div class="page-header">
-      <button class="back-btn" @click="$router.back()">
-        <Icon name="arrowLeft" :size="20" color="currentColor" stroke-width="medium" />
-      </button>
-      <h1 class="page-title">安全中心</h1>
-      <div class="header-actions"></div>
-    </div>
-
+  <PageLayout title="安全中心" :show-back="true">
     <div class="page-content">
       <!-- 加载状态 -->
       <div v-if="loading" class="loading-state">
@@ -90,12 +81,13 @@
         </div>
       </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import Icon from '../components/Icon.vue'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const loading = ref(true)
 const score = ref(0)
