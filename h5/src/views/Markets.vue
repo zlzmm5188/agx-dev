@@ -1,26 +1,20 @@
 <template>
-  <div class="market-page">
-    <!-- 固定顶部栏 -->
-    <div class="page-header">
-      <h1 class="page-title">行情中心</h1>
-      <div class="header-actions">
-        <button class="header-btn" @click="toggleView">
-          <svg v-if="viewMode === 'list'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
-          </svg>
-          <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
-          </svg>
-        </button>
-        <button class="header-btn" @click="$router.push('/notifications')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <div class="page-content">
+  <PageLayout title="行情中心" :show-back="false">
+    <template #navbar-right>
+      <button class="header-btn" @click="toggleView">
+        <svg v-if="viewMode === 'list'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+        </svg>
+        <svg v-else width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+        </svg>
+      </button>
+      <button class="header-btn" @click="$router.push('/notifications')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      </button>
+    </template>
       <!-- 自建滚动走马灯 -->
       <div class="ticker-tape">
         <div class="ticker-track">
@@ -129,13 +123,13 @@
           <span>黄金专区</span>
         </router-link>
       </div>
-    </div>
-  </div>
+    </PageLayout>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { api } from '../utils/api'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const activeTab = ref('crypto')
 const viewMode = ref('list')
