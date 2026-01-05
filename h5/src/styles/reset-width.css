@@ -23,9 +23,41 @@ html, body {
 .page-wrapper,
 .page-container,
 .page-view,
-.page-layout {
-  width: 100vw;
-  max-width: 100vw;
+.page-layout,
+.home-page,
+.login-page,
+.register-page,
+.trade-page,
+.market-page,
+.assets-page,
+.mine-page,
+.ai-page,
+.chat-page,
+.help-page,
+.about-page,
+.gold-page,
+.earn-page,
+.contract-page,
+.ieo-page,
+.mining-page,
+.otc-page,
+.kline-page,
+.deposit-page,
+.withdraw-page,
+.kyc-page,
+.security-page,
+.settings-page,
+.invite-page,
+.notifications-page,
+.orders-page,
+.ranking-page,
+.square-page,
+.create-post-page,
+.post-detail-page,
+.chat-detail-page,
+.user-profile-page {
+  width: 100vw !important;
+  max-width: 100vw !important;
   min-width: 320px;
   overflow-x: hidden;
 }

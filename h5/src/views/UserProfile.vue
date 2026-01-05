@@ -172,7 +172,7 @@ const startChat = async () => {
 <style scoped>
 .user-profile-page {
   width: 100%;
-  max-width: 428px;
+  max-width: 100vw;
   height: 100%;
   margin: 0 auto;
   display: flex;

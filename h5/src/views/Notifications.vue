@@ -177,7 +177,7 @@ const clearAll = () => {
 <style scoped>
 .notifications-page {
   width: 100%;
-  max-width: 428px;
+  max-width: 100vw;
   min-height: 100vh;
   min-height: 100dvh;
   margin: 0 auto;

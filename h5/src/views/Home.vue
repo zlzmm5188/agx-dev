@@ -727,10 +727,10 @@ const getCoinStyle = (n) => {
 
 /* 页面容器 */
 .home-page {
-  width: 100%;
-  max-width: 428px;
+  width: 100vw;
+  max-width: 100vw;
   height: 100%;
-  margin: 0 auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   background: linear-gradient(180deg, #181a20 0%, #131518 50%, #0c0e12 100%);

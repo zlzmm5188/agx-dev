@@ -1317,7 +1317,7 @@ watch(() => route.query.pair, (newPair) => {
 
 .leverage-modal {
   width: 100%;
-  max-width: 428px;
+  max-width: 100vw;
   background: #181A20;
   border-radius: 20px 20px 0 0;
   padding: 20px;

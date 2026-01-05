@@ -142,7 +142,7 @@ const handleWithdraw = () => {
 /* 页面容器 */
 .withdraw-page {
   width: 100%;
-  max-width: 428px;
+  max-width: 100vw;
   min-height: 100vh;
   min-height: 100dvh;
   margin: 0 auto;
@@ -428,7 +428,7 @@ const handleWithdraw = () => {
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 428px;
+  max-width: 100vw;
   padding: 16px;
   padding-bottom: max(16px, env(safe-area-inset-bottom));
   background: linear-gradient(180deg, rgba(11, 14, 17, 0) 0%, #0b0e11 20%);
