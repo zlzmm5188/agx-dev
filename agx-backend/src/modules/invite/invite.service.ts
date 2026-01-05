@@ -311,4 +311,189 @@ export class InviteService {
       user: { id: i + 1, nickname: u.nickname, avatar: null, level: Math.min(5, Math.ceil((10 - i) / 2)), isVerified: i < 5 ? 1 : 0 }
     }));
   }
+
+  /**
+   * 获取邀请关系树形图数据
+   */
+  async getInviteTreeData(userId: number, maxDepth: number = 3) {
+    // 首先获取指定用户信息
+    const user = await this.userRepository.findOne({ 
+      where: { id: userId },
+      select: ['id', 'uid', 'username', 'nickname', 'avatar', 'level', 'inviteCount', 'teamCount', 'totalCommission', 'createdAt']
+    });
+    
+    if (!user) {
+      return null;
+    }
+
+    // 获取用户等级信息
+    const levelInfo = await this.getUserLevel(user.level);
+
+    // 构建根节点
+    const rootNode = {
+      id: user.id,
+      uid: user.uid,
+      name: user.nickname || user.username,
+      level: user.level,
+      levelName: levelInfo?.name || '普通用户',
+      inviteCount: user.inviteCount,
+      teamCount: user.teamCount,
+      totalCommission: user.totalCommission,
+      createdAt: user.createdAt,
+      children: []
+    };
+
+    // 递归构建子节点
+    await this.buildTreeChildren(rootNode, maxDepth, 1);
+
+    return rootNode;
+  }
+
+  /**
+   * 递归构建树形图的子节点
+   */
+  private async buildTreeChildren(node: any, maxDepth: number, currentDepth: number) {
+    if (currentDepth >= maxDepth) {
+      return;
+    }
+
+    // 获取当前节点用户的直接邀请用户
+    const directInvites = await this.userInviteRepository.find({
+      where: { inviterId: node.id, level: 1 }, // level 1 表示直接下级
+      select: ['userId']
+    });
+
+    // 获取用户详细信息并构建子节点
+    for (const invite of directInvites) {
+      const childUser = await this.userRepository.findOne({ 
+        where: { id: invite.userId },
+        select: ['id', 'uid', 'username', 'nickname', 'avatar', 'level', 'inviteCount', 'teamCount', 'totalCommission', 'createdAt']
+      });
+      
+      if (childUser) {
+        const childLevelInfo = await this.getUserLevel(childUser.level);
+        
+        const childNode = {
+          id: childUser.id,
+          uid: childUser.uid,
+          name: childUser.nickname || childUser.username,
+          level: childUser.level,
+          levelName: childLevelInfo?.name || '普通用户',
+          inviteCount: childUser.inviteCount,
+          teamCount: childUser.teamCount,
+          totalCommission: childUser.totalCommission,
+          createdAt: childUser.createdAt,
+          children: []
+        };
+        
+        // 递归构建更深层的子节点
+        await this.buildTreeChildren(childNode, maxDepth, currentDepth + 1);
+        
+        node.children.push(childNode);
+      }
+    }
+  }
+
+  /**
+   * 搜索用户
+   */
+  async searchUsers(keyword: string, page: number = 1, pageSize: number = 20) {
+    if (!keyword) {
+      return { list: [], total: 0 };
+    }
+
+    // 构建查询条件
+    const queryBuilder = this.userRepository.createQueryBuilder('user')
+      .where('user.uid LIKE :keyword', { keyword: `%${keyword}%` })
+      .orWhere('user.username LIKE :keyword', { keyword: `%${keyword}%` })
+      .orWhere('user.nickname LIKE :keyword', { keyword: `%${keyword}%` })
+      .orWhere('user.inviteCode LIKE :keyword', { keyword: `%${keyword}%` });
+
+    const [list, total] = await queryBuilder
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
+
+    // 处理返回数据格式
+    const result = list.map(user => {
+      return {
+        id: user.id,
+        uid: user.uid,
+        username: user.username,
+        nickname: user.nickname,
+        avatar: user.avatar,
+        level: user.level,
+        inviteCount: user.inviteCount,
+        teamCount: user.teamCount,
+        totalCommission: user.totalCommission,
+        createdAt: user.createdAt,
+      };
+    });
+
+    return { list: result, total };
+  }
+
+  /**
+   * 获取邀请统计信息
+   */
+  async getInviteStats(userId: number) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      return null;
+    }
+
+    // 获取直接邀请统计
+    const directInviteCount = await this.userInviteRepository.count({
+      where: { inviterId: userId, level: 1 }
+    });
+
+    // 获取二级邀请统计
+    const secondLevelInviteCount = await this.userInviteRepository.count({
+      where: { inviterId: userId, level: 2 }
+    });
+
+    // 获取三级邀请统计
+    const thirdLevelInviteCount = await this.userInviteRepository.count({
+      where: { inviterId: userId, level: 3 }
+    });
+
+    // 获取团队统计
+    const teamStats = await this.getTeamStats(userId);
+
+    return {
+      userId: user.id,
+      directInviteCount,
+      secondLevelInviteCount,
+      thirdLevelInviteCount,
+      totalInviteCount: user.inviteCount,
+      teamCount: user.teamCount,
+      totalCommission: user.totalCommission,
+      teamStats,
+    };
+  }
+
+  /**
+   * 获取团队统计信息
+   */
+  private async getTeamStats(userId: number) {
+    // 这里可以计算更详细的团队统计信息
+    // 比如各层级人数分布、活跃用户数等
+    const levelStats = [];
+    
+    for (let level = 1; level <= 3; level++) {
+      const count = await this.userInviteRepository.count({
+        where: { inviterId: userId, level }
+      });
+      
+      levelStats.push({
+        level,
+        count
+      });
+    }
+
+    return {
+      levelStats,
+      // 其他统计信息
+    };
+  }
 }

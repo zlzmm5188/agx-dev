@@ -177,6 +177,28 @@ export const api = {
     chat: (data) => apiClient.post('/api/ai/chat', data),
     getQuestions: (language) => apiClient.get('/api/ai/questions', { params: { language } }),
   },
+
+  // ========== 交易模块 /api/trade ==========
+  trade: {
+    getPairs: () => apiClient.get('/api/trade/pairs'),
+    createOrder: (data) => apiClient.post('/api/trade/order', data),
+    cancelOrder: (orderNo) => apiClient.delete(`/api/trade/order/${orderNo}`),
+    getOrders: (params) => apiClient.get('/api/trade/orders', { params }),
+    getIssues: () => apiClient.get('/api/trade/issues'),
+    subscribeCoin: (data) => apiClient.post('/api/trade/subscribe', data),
+  },
+
+  // ========== 广场模块 /api/square ==========
+  square: {
+    getPosts: (params) => apiClient.get('/api/square/posts', { params }),
+    getPost: (id) => apiClient.get(`/api/square/post/${id}`),
+    createPost: (data) => apiClient.post('/api/square/post', data),
+    toggleLike: (data) => apiClient.post('/api/square/like', data),
+    createComment: (data) => apiClient.post('/api/square/comment', data),
+    getComments: (params) => apiClient.get('/api/square/comments', { params }),
+    toggleFollow: (data) => apiClient.post('/api/square/follow', data),
+    getTopics: (params) => apiClient.get('/api/square/topics', { params }),
+  },
 }
 
 export default api

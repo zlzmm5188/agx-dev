@@ -1,202 +1,167 @@
 <template>
-  <PageLayout :show-navbar="false">
-    <!-- 聊天头部 -->
-    <div class="chat-header">
-      <button class="back-btn" @click="$router.back()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M15 18l-6-6 6-6"/>
-        </svg>
-      </button>
-      <div class="user-info">
-        <span class="user-name">{{ chatUser.name }}</span>
-        <span class="user-status" :class="{ online: chatUser.online }">
-          {{ chatUser.online ? '在线' : '离线' }}
-        </span>
-      </div>
-      <button class="more-btn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/>
-        </svg>
-      </button>
-    </div>
-
-    <!-- 消息列表 -->
-    <div class="messages-container" ref="messagesContainer">
-      <div class="messages-list">
+  <PageLayout :show-back="true" :title="chatUser?.nickname || '聊天'">
+    <div class="chat-container">
+      <!-- 消息列表 -->
+      <div class="messages-container" ref="messagesContainer">
         <div 
-          v-for="(msg, index) in messages" 
-          :key="index"
-          :class="['message-item', msg.self ? 'self' : 'other']"
+          v-for="message in messages" 
+          :key="message.id"
+          :class="['message-item', { 'self-message': message.senderId === currentUserId }]"
         >
-          <div v-if="!msg.self" class="msg-avatar">{{ chatUser.name.charAt(0) }}</div>
-          <div class="msg-content">
-            <div class="msg-bubble">
-              <span v-if="msg.type === 'text'">{{ msg.content }}</span>
-              <img v-else-if="msg.type === 'image'" :src="msg.content" class="msg-image">
+          <div class="message-avatar">
+            <img 
+              :src="message.senderId === currentUserId ? currentUserAvatar : chatUser?.avatar" 
+              alt="头像"
+              class="avatar"
+            >
+          </div>
+          <div class="message-content">
+            <div class="message-bubble">
+              <span class="message-text">{{ message.content }}</span>
+              <span class="message-time">{{ formatTime(message.createdAt) }}</span>
             </div>
-            <span class="msg-time">{{ msg.time }}</span>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 输入区域 -->
-    <div class="input-area">
-      <button class="input-action">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/>
-        </svg>
-      </button>
-      <div class="input-wrap">
-        <input 
-          type="text" 
-          v-model="inputText" 
-          placeholder="输入消息..."
-          @keyup.enter="sendMessage"
-        >
+      <!-- 输入区域 -->
+      <div class="input-container">
+        <div class="input-box">
+          <input
+            v-model="inputMessage"
+            type="text"
+            placeholder="输入消息..."
+            class="message-input"
+            @keyup.enter="sendMessage"
+          >
+          <button 
+            class="send-btn" 
+            :disabled="!canSendMessage"
+            @click="sendMessage"
+          >
+            发送
+          </button>
+        </div>
       </div>
-      <button class="send-btn" :class="{ active: inputText.trim() }" @click="sendMessage">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
-        </svg>
-      </button>
     </div>
   </PageLayout>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import PageLayout from '../components/layout/PageLayout.vue'
+import { api } from '../utils/api'
+import { alert } from '../utils/alert'
 
 const route = useRoute()
+const chatUserId = ref(parseInt(route.params.userId))
+const messages = ref([])
+const inputMessage = ref('')
 const messagesContainer = ref(null)
-const inputText = ref('')
+const currentUserId = ref(1) // 从用户信息获取
+const chatUser = ref(null)
 
-const chatUser = ref({
-  id: route.params.userId,
-  name: '币圈大V',
-  online: true
+// 检查是否可以发送消息
+const canSendMessage = computed(() => {
+  return inputMessage.value.trim().length > 0
 })
 
-const messages = ref([
-  { type: 'text', content: '你好！最近行情怎么看？', self: false, time: '10:20' },
-  { type: 'text', content: '今天BTC突破10万了，整体看涨', self: true, time: '10:21' },
-  { type: 'text', content: '是的，我觉得还有上涨空间', self: false, time: '10:22' },
-  { type: 'text', content: 'AGX项目你有关注吗？', self: true, time: '10:23' },
-  { type: 'text', content: '当然，黄金背书的代币很有前景，我已经预约了', self: false, time: '10:25' },
-  { type: 'text', content: '👍 等开盘的时候一起', self: true, time: '10:26' },
-  { type: 'text', content: '好的，到时候群里通知大家', self: false, time: '10:30' }
-])
+// 格式化时间
+const formatTime = (timeStr) => {
+  const date = new Date(timeStr)
+  return date.toLocaleTimeString('zh-CN', { 
+    hour: '2-digit', 
+    minute: '2-digit' 
+  })
+}
 
-const scrollToBottom = () => {
-  nextTick(() => {
-    if (messagesContainer.value) {
-      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
+// 加载聊天用户信息
+const loadChatUser = async () => {
+  // 实际应用中应该通过API获取用户信息
+  chatUser.value = { id: chatUserId.value, nickname: '好友', avatar: null }
+}
+
+// 加载消息历史
+const loadMessages = async () => {
+  try {
+    const response = await api.social.getMessages(chatUserId.value, { limit: 50 })
+    if (response.success) {
+      messages.value = response.data.list || []
+      // 滚动到底部
+      await nextTick()
+      scrollToBottom()
     }
-  })
+  } catch (error) {
+    console.error('加载消息失败:', error)
+  }
 }
 
-const sendMessage = () => {
-  if (!inputText.value.trim()) return
-  
-  messages.value.push({
-    type: 'text',
-    content: inputText.value,
-    self: true,
-    time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
-  })
-  
-  inputText.value = ''
-  scrollToBottom()
-  
-  // 模拟回复
-  setTimeout(() => {
-    messages.value.push({
-      type: 'text',
-      content: '好的，收到！',
-      self: false,
-      time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+// 发送消息
+const sendMessage = async () => {
+  if (!canSendMessage.value) return
+
+  const content = inputMessage.value.trim()
+  if (!content) return
+
+  try {
+    const response = await api.social.sendMessage({
+      receiverId: chatUserId.value,
+      content: content
     })
-    scrollToBottom()
-  }, 1000)
+
+    if (response.success) {
+      // 添加到消息列表
+      const newMessage = {
+        id: Date.now(), // 临时ID
+        senderId: currentUserId.value,
+        receiverId: chatUserId.value,
+        content: content,
+        createdAt: new Date().toISOString()
+      }
+      messages.value.push(newMessage)
+      inputMessage.value = ''
+      await nextTick()
+      scrollToBottom()
+    } else {
+      alert(response.message || '发送失败')
+    }
+  } catch (error) {
+    console.error('发送消息失败:', error)
+    alert('发送失败，请重试')
+  }
 }
 
-onMounted(() => {
-  scrollToBottom()
+// 滚动到底部
+const scrollToBottom = () => {
+  const container = messagesContainer.value
+  if (container) {
+    container.scrollTop = container.scrollHeight
+  }
+}
+
+onMounted(async () => {
+  await loadChatUser()
+  await loadMessages()
+})
+
+onUnmounted(() => {
+  // 清理资源
 })
 </script>
 
 <style scoped>
-.chat-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 999;
+.chat-container {
   display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  padding-top: calc(12px + env(safe-area-inset-top));
-  background: #1a1c20;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-
-.back-btn {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #eaecef;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.user-info {
-  flex: 1;
-  text-align: center;
-}
-
-.user-name {
-  display: block;
-  font-size: 16px;
-  font-weight: 600;
-  color: #eaecef;
-}
-
-.user-status {
-  font-size: 12px;
-  color: #5e6673;
-}
-
-.user-status.online { color: #0ECB81; }
-
-.more-btn {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #5e6673;
-  background: none;
-  border: none;
-  cursor: pointer;
+  flex-direction: column;
+  height: 100vh;
+  background: #0B0E11;
 }
 
 .messages-container {
-  min-height: calc(100vh - 120px);
+  flex: 1;
   overflow-y: auto;
   padding: 16px;
-  padding-top: calc(56px + env(safe-area-inset-top));
-  background: linear-gradient(180deg, #181a20 0%, #131518 50%, #0c0e12 100%);
-  -webkit-overflow-scrolling: touch;
-}
-
-.messages-container::-webkit-scrollbar { display: none; }
-
-.messages-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -204,133 +169,118 @@ onMounted(() => {
 
 .message-item {
   display: flex;
+  gap: 8px;
   align-items: flex-end;
-  gap: 10px;
-  max-width: 80%;
 }
 
-.message-item.self {
-  align-self: flex-end;
+.message-item.self-message {
   flex-direction: row-reverse;
 }
 
-.message-item.other {
-  align-self: flex-start;
-}
-
-.msg-avatar {
+.message-avatar {
   width: 36px;
   height: 36px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #C9A962, #8B7355);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 600;
-  color: #fff;
   flex-shrink: 0;
 }
 
-.msg-content {
+.avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #2B3139;
+}
+
+.message-content {
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
-.message-item.self .msg-content { align-items: flex-end; }
-.message-item.other .msg-content { align-items: flex-start; }
-
-.msg-bubble {
-  padding: 12px 16px;
-  border-radius: 18px;
-  font-size: 14px;
-  line-height: 1.5;
-  max-width: 260px;
-  word-break: break-word;
-}
-
-.message-item.self .msg-bubble {
-  background: linear-gradient(135deg, #C9A962, #A88B4A);
-  color: #0f1317;
-  border-bottom-right-radius: 4px;
-}
-
-.message-item.other .msg-bubble {
-  background: #2B3139;
-  color: #eaecef;
-  border-bottom-left-radius: 4px;
-}
-
-.msg-time {
-  font-size: 11px;
-  color: #5e6673;
-  padding: 0 4px;
-}
-
-.msg-image {
-  max-width: 200px;
+.message-bubble {
+  max-width: 70%;
+  background: #181A20;
   border-radius: 12px;
+  padding: 8px 12px;
+  position: relative;
 }
 
-.input-area {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.self-message .message-bubble {
+  background: #F0B90B;
+  color: #000;
+}
+
+.message-text {
+  display: block;
+  margin-bottom: 4px;
+  word-wrap: break-word;
+}
+
+.message-time {
+  font-size: 10px;
+  color: #848E9C;
+  text-align: right;
+}
+
+.self-message .message-time {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.input-container {
   padding: 12px 16px;
-  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  background: #1a1c20;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  flex-shrink: 0;
+  border-top: 1px solid #2B3139;
+  background: #0B0E11;
 }
 
-.input-action {
-  width: 40px;
-  height: 40px;
+.input-box {
   display: flex;
+  gap: 8px;
   align-items: center;
-  justify-content: center;
-  color: #5e6673;
-  background: none;
-  border: none;
-  cursor: pointer;
 }
 
-.input-wrap {
+.message-input {
   flex: 1;
-  background: #2B3139;
+  padding: 10px 12px;
+  background: #181A20;
+  border: 1px solid #2B3139;
   border-radius: 20px;
-  padding: 0 16px;
-}
-
-.input-wrap input {
-  width: 100%;
-  height: 40px;
-  background: none;
-  border: none;
-  color: #eaecef;
+  color: #EAECEF;
   font-size: 14px;
   outline: none;
 }
 
-.input-wrap input::placeholder { color: #5e6673; }
+.message-input:focus {
+  border-color: #F0B90B;
+}
 
 .send-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #2B3139;
-  color: #5e6673;
+  padding: 10px 16px;
+  background: #F0B90B;
+  color: #000;
   border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
 }
 
-.send-btn.active {
-  background: linear-gradient(135deg, #C9A962, #A88B4A);
-  color: #0f1317;
+.send-btn:disabled {
+  background: #2B3139;
+  color: #848E9C;
+  cursor: not-allowed;
+}
+
+/* 消息列表滚动条样式 */
+.messages-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background: #2B3139;
+  border-radius: 3px;
 }
 </style>
+</template>

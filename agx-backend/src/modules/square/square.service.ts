@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, IsNull } from 'typeorm';
-import { Post, Comment, Like, Follow, Topic, User } from '../../entities';
+import { Repository, IsNull, FindManyOptions } from 'typeorm';
+import { Post, Comment, Like, Follow, Topic, User, SensitiveWord, PostReview } from '../../entities';
+import { SensitiveWordService } from './sensitive-word.service';
 
 /**
  * 广场服务
@@ -22,6 +23,11 @@ export class SquareService {
     private topicRepository: Repository<Topic>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(SensitiveWord)
+    private sensitiveWordRepository: Repository<SensitiveWord>,
+    @InjectRepository(PostReview)
+    private postReviewRepository: Repository<PostReview>,
+    private sensitiveWordService: SensitiveWordService,
   ) {}
 
   /**
@@ -102,14 +108,46 @@ export class SquareService {
   /**
    * 发布帖子
    */
-  async createPost(userId: number, content: string, images?: string[], topic?: string, type?: string) {
+  async createPost(userId: number, content: string, images?: string[], topic?: string, type?: string, videoUrl?: string) {
+    // 检查敏感词
+    const { hasSensitive, matchedWords } = await this.sensitiveWordService.checkSensitiveWords(content);
+    if (hasSensitive) {
+      // 根据敏感词级别决定是否自动通过审核
+      const sensitiveWords = await this.sensitiveWordRepository.find({
+        where: { word: In(matchedWords) }
+      });
+      
+      const highestLevel = Math.max(...sensitiveWords.map(w => w.level));
+      
+      // 如果包含级别为2（禁止）的敏感词，则直接设为审核中状态
+      if (highestLevel === 2) {
+        // 内容包含禁止词汇，需要人工审核
+        const post = this.postRepository.create({
+          userId,
+          content,
+          images: images ? JSON.stringify(images) : null,
+          topic,
+          type: type || 'normal',
+          status: 0, // 审核中
+          mediaType: videoUrl ? 'video' : (images && images.length > 0 ? 'image' : 'text'),
+          videoUrl: videoUrl || null,
+        });
+
+        await this.postRepository.save(post);
+        return post;
+      }
+    }
+
+    // 内容通过敏感词检测，直接发布
     const post = this.postRepository.create({
       userId,
       content,
       images: images ? JSON.stringify(images) : null,
       topic,
       type: type || 'normal',
-      status: 1,
+      status: 1, // 直接发布
+      mediaType: videoUrl ? 'video' : (images && images.length > 0 ? 'image' : 'text'),
+      videoUrl: videoUrl || null,
     });
 
     await this.postRepository.save(post);
@@ -163,6 +201,12 @@ export class SquareService {
    * 发表评论
    */
   async createComment(userId: number, postId: number, content: string, parentId?: number, replyToUserId?: number) {
+    // 检查敏感词
+    const { hasSensitive } = await this.sensitiveWordService.checkSensitiveWords(content);
+    if (hasSensitive) {
+      throw new Error('评论内容包含敏感词汇，请修改后重新发布');
+    }
+
     const comment = this.commentRepository.create({
       postId,
       userId,
@@ -279,6 +323,8 @@ export class SquareService {
         isHot: 1,
         isOfficial: 0,
         status: 1,
+        mediaType: 'text',
+        videoUrl: null,
         createdAt: new Date(Date.now() - 2 * 3600000),
         author: { id: 1, nickname: '币圈大V', avatar: null, isVerified: 1, userTag: '大V' }
       },
@@ -297,6 +343,8 @@ export class SquareService {
         isHot: 1,
         isOfficial: 1,
         status: 1,
+        mediaType: 'text',
+        videoUrl: null,
         createdAt: new Date(Date.now() - 30 * 60000),
         author: { id: 2, nickname: 'AGX官方', avatar: null, isVerified: 1, userTag: '官方' }
       },
@@ -315,6 +363,8 @@ export class SquareService {
         isHot: 0,
         isOfficial: 0,
         status: 1,
+        mediaType: 'text',
+        videoUrl: null,
         createdAt: new Date(Date.now() - 5 * 3600000),
         author: { id: 3, nickname: '量化策略', avatar: null, isVerified: 1, userTag: '策略' }
       }

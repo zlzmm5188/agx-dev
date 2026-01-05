@@ -440,5 +440,155 @@ export default {
       method: 'get',
       params
     })
+  },
+
+  // ============ 交易对管理 ============
+
+  getTradingPairs(params = {}) {
+    return request({
+      url: '/api/admin/trade/pairs',
+      method: 'get',
+      params
+    })
+  },
+
+  createTradingPair(data) {
+    return request({
+      url: '/api/admin/trade/pair',
+      method: 'post',
+      data
+    })
+  },
+
+  updateTradingPair(id, data) {
+    return request({
+      url: `/api/admin/trade/pair/${id}`,
+      method: 'put',
+      data
+    })
+  },
+
+  deleteTradingPair(id) {
+    return request({
+      url: `/api/admin/trade/pair/${id}`,
+      method: 'delete'
+    })
+  },
+
+  // ============ 新币发行管理 ============
+
+  getCoinIssues(params = {}) {
+    return request({
+      url: '/api/admin/trade/ieo',
+      method: 'get',
+      params
+    })
+  },
+
+  createCoinIssue(data) {
+    return request({
+      url: '/api/admin/trade/ieo',
+      method: 'post',
+      data
+    })
+  },
+
+  updateCoinIssue(id, data) {
+    return request({
+      url: `/api/admin/trade/ieo/${id}`,
+      method: 'put',
+      data
+    })
+  },
+
+  deleteCoinIssue(id) {
+    return request({
+      url: `/api/admin/trade/ieo/${id}`,
+      method: 'delete'
+    })
+  },
+
+  // ============ 敏感词管理 ============
+
+  getSensitiveWords(params = {}) {
+    return request({
+      url: '/api/square/sensitive-words',
+      method: 'get',
+      params
+    })
+  },
+
+  createSensitiveWord(data) {
+    return request({
+      url: '/api/square/sensitive-words',
+      method: 'post',
+      data
+    })
+  },
+
+  updateSensitiveWord(id, data) {
+    return request({
+      url: `/api/square/sensitive-words/${id}`,
+      method: 'post', // 使用POST方法更新，因为PUT方法可能在后端未定义
+      data
+    })
+  },
+
+  deleteSensitiveWord(id) {
+    return request({
+      url: `/api/square/sensitive-words/${id}/delete`,
+      method: 'post' // 使用POST方法删除，因为DELETE方法可能在后端未定义
+    })
+  },
+
+  // ============ 帖子审核管理 ============
+
+  getPendingPosts(params = {}) {
+    return request({
+      url: '/api/square/pending-posts',
+      method: 'get',
+      params
+    })
+  },
+
+  reviewPost(data) {
+    return request({
+      url: '/api/square/review',
+      method: 'post',
+      data
+    })
+  },
+
+  getReviewHistory(postId) {
+    return request({
+      url: `/api/square/review-history/${postId}`,
+      method: 'get'
+    })
+  },
+
+  batchReviewPosts(data) {
+    return request({
+      url: '/api/square/batch-review',
+      method: 'post',
+      data
+    })
+  },
+
+  // ============ 私信管理 ============
+
+  getUserMessages(userId1, userId2, params = {}) {
+    return request({
+      url: `/api/square/messages/${userId1}/${userId2}`,
+      method: 'get',
+      params
+    })
+  },
+
+  getAllMessages(params = {}) {
+    return request({
+      url: '/api/square/all-messages',
+      method: 'get',
+      params
+    })
   }
 }
