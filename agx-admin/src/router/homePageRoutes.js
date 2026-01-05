@@ -117,6 +117,13 @@ const homePageRoutes = [
     component: () => import('@/views/square/PostReview.vue'),
     meta: { title: '帖子审核', hidden: true }
   },
+  // AGX 私信管理
+  {
+    name: 'agxPrivateMessage',
+    path: '/agx/privateMessage',
+    component: () => import('@/views/square/PrivateMessage.vue'),
+    meta: { title: '私信管理', hidden: true }
+  },
 ]
 
 export const homePage = {
