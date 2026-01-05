@@ -1,0 +1,163 @@
+/**
+ * AGX Exchange - Design Tokens
+ * 设计令牌系统 - 所有样式值的唯一来源
+ * 禁止在其他文件中硬编码数值
+ */
+
+:root {
+  /* ========== 品牌色 - 金色 ========== */
+  --color-brand: #C9A962;
+  --color-brand-light: #D4B872;
+  --color-brand-dark: #A08B5B;
+  --color-brand-rgb: 201, 169, 98;
+  --color-brand-bg: rgba(201, 169, 98, 0.1);
+  
+  /* ========== 辅助色 - 青蓝绿 ========== */
+  --color-accent: #00BFA5;
+  --color-accent-light: #00D4B8;
+  --color-accent-dark: #009688;
+  --color-accent-rgb: 0, 191, 165;
+  --color-accent-bg: rgba(0, 191, 165, 0.1);
+  
+  /* ========== 语义色 ========== */
+  --color-up: #0ECB81;
+  --color-up-rgb: 14, 203, 129;
+  --color-up-bg: rgba(14, 203, 129, 0.12);
+  
+  --color-down: #F6465D;
+  --color-down-rgb: 246, 70, 93;
+  --color-down-bg: rgba(246, 70, 93, 0.12);
+  
+  --color-warning: #F0B90B;
+  --color-warning-bg: rgba(240, 185, 11, 0.12);
+  
+  --color-info: #1E88E5;
+  --color-info-bg: rgba(30, 136, 229, 0.12);
+  
+  /* ========== 黄金专用色（仅用于黄金相关功能） ========== */
+  --color-gold: #FFB300;
+  --color-gold-light: #FFCA28;
+  --color-gold-dark: #FF8F00;
+  --color-gold-bg: rgba(255, 179, 0, 0.1);
+  
+  /* ========== 背景色 ========== */
+  --bg-primary: #0c0e12;
+  --bg-secondary: #181A20;
+  --bg-card: #1E2329;
+  --bg-input: #2B3139;
+  --bg-hover: #252930;
+  --bg-active: #2E3440;
+  --bg-overlay: rgba(0, 0, 0, 0.7);
+  
+  /* ========== 文字色 ========== */
+  --text-primary: #EAECEF;
+  --text-secondary: #B7BDC6;
+  --text-tertiary: #848E9C;
+  --text-disabled: #5E6673;
+  --text-inverse: #0c0e12;
+  
+  /* ========== 边框 ========== */
+  --border-color: #2B3139;
+  --border-light: #363C45;
+  
+  /* ========== 尺寸阶梯 ========== */
+  --space-0: 0;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 20px;
+  --space-xxl: 24px;
+  --space-3xl: 32px;
+  
+  /* ========== 字体尺寸 ========== */
+  --font-xs: 10px;
+  --font-sm: 12px;
+  --font-md: 14px;
+  --font-lg: 16px;
+  --font-xl: 20px;
+  --font-xxl: 24px;
+  --font-3xl: 28px;
+  --font-price: 32px;
+  
+  /* ========== 行高（与字体严格对应） ========== */
+  --lh-xs: 14px;
+  --lh-sm: 16px;
+  --lh-md: 20px;
+  --lh-lg: 22px;
+  --lh-xl: 28px;
+  --lh-xxl: 32px;
+  --lh-3xl: 36px;
+  --lh-price: 40px;
+  
+  /* ========== 字重 ========== */
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  
+  /* ========== 圆角 (BINIX 风格：更圆润) ========== */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+  
+  /* ========== 固定高度 ========== */
+  --height-header: 52px;
+  --height-tabbar: 64px;
+  --height-btn-sm: 36px;
+  --height-btn-md: 44px;
+  --height-btn-lg: 48px;
+  --height-input: 48px;
+  --height-input-sm: 40px;
+  --height-coin-item: 64px;
+  --height-menu-item: 56px;
+  --height-order-row: 28px;
+  --height-quick-entry: 80px;
+  --height-product-card: 180px;
+  --height-ieo-card: 200px;
+  
+  /* ========== 固定宽度 ========== */
+  --width-percent-badge: 72px;
+  --width-sidebar: 280px;
+  
+  /* ========== 图标尺寸（仅限这4种） ========== */
+  --icon-xs: 16px;
+  --icon-sm: 20px;
+  --icon-md: 24px;
+  --icon-lg: 32px;
+  
+  /* ========== 头像尺寸（仅限这3种） ========== */
+  --avatar-sm: 24px;
+  --avatar-md: 32px;
+  --avatar-lg: 40px;
+  
+  /* ========== 过渡动画 ========== */
+  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+  --duration-fast: 100ms;
+  --duration-normal: 150ms;
+  --duration-slow: 250ms;
+  
+  /* ========== 安全区域 ========== */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  
+  /* ========== 层级 ========== */
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-toast: 600;
+  --z-tooltip: 700;
+  
+  /* ========== 字体族 - 使用系统字体加速渲染 ========== */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', 'Liberation Mono', monospace;
+}

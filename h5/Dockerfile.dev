@@ -1,0 +1,16 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# 安装依赖
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
+
+# 复制源码
+COPY . .
+
+# 暴露开发服务器端口
+EXPOSE 5173
+
+# 启动开发服务器
+CMD ["npx", "vite", "--host", "0.0.0.0"]
