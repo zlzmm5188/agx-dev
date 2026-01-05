@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SocialController } from './social.controller';
 import { SocialService } from './social.service';
+import { ChatGateway } from './chat.gateway';
 import {
   Friend,
   FriendRequest,
@@ -27,7 +28,7 @@ import {
     ]),
   ],
   controllers: [SocialController],
-  providers: [SocialService],
+  providers: [SocialService, ChatGateway],
   exports: [SocialService],
 })
 export class SocialModule {}

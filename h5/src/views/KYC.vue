@@ -1,16 +1,5 @@
 <template>
-  <div class="kyc-page">
-    <!-- 固定顶部栏 -->
-    <div class="page-header">
-      <button class="back-btn" @click="$router.back()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M15 18l-6-6 6-6"/>
-        </svg>
-      </button>
-      <h1 class="page-title">身份认证</h1>
-      <div class="header-placeholder"></div>
-    </div>
-
+  <PageLayout title="身份认证" :show-back="true">
     <div class="page-content">
       <!-- KYC状态 -->
       <div class="kyc-status">
@@ -154,12 +143,13 @@
         </ul>
       </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
 import { alert } from '../utils/alert'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const kycLevel = ref('none') // none, basic, advanced
 const showForm = ref(false)

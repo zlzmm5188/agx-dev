@@ -1,0 +1,113 @@
+/* 移动端宽度重置样式 - 确保所有页面宽度统一 */
+
+/* 全局盒模型 */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* 页面容器标准宽度 - 移动端居中布局 */
+.page-wrapper,
+.page-container,
+.page-view,
+.page-layout,
+.home-page,
+.login-page,
+.register-page,
+.trade-page,
+.market-page,
+.assets-page,
+.mine-page,
+.ai-page,
+.chat-page,
+.help-page,
+.about-page,
+.gold-page,
+.earn-page,
+.contract-page,
+.ieo-page,
+.mining-page,
+.otc-page,
+.kline-page,
+.deposit-page,
+.withdraw-page,
+.kyc-page,
+.security-page,
+.settings-page,
+.invite-page,
+.notifications-page,
+.orders-page,
+.ranking-page,
+.square-page,
+.create-post-page,
+.post-detail-page,
+.chat-detail-page,
+.user-profile-page {
+  width: 100%;
+  max-width: 428px;
+  min-width: 320px;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+/* 内容区域标准内边距 */
+.page-content {
+  width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* 列表容器 */
+.list-wrapper {
+  width: 100%;
+  padding: 0;
+}
+
+/* 列表项 */
+.list-item {
+  width: 100%;
+  padding: 12px 16px;
+}
+
+/* 卡片容器 */
+.card {
+  width: 100%;
+  margin: 0;
+}
+
+/* 全屏元素（如轮播图） */
+.fullscreen {
+  width: 100vw;
+  margin-left: calc(-1 * var(--page-padding, 16px));
+  margin-right: calc(-1 * var(--page-padding, 16px));
+}
+
+/* 修复常见的宽度问题 */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 防止表格溢出 */
+table {
+  max-width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+/* 防止代码块溢出 */
+pre, code {
+  max-width: 100%;
+  overflow-x: auto;
+}

@@ -1,5 +1,5 @@
 <template>
-  <div class="user-profile-page">
+  <PageLayout :show-navbar="false" :show-back="false">
     <!-- 头部背景 -->
     <div class="profile-header">
       <div class="header-bg"></div>
@@ -101,13 +101,14 @@
         </div>
       </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { alert } from '../utils/alert'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const route = useRoute()
 const router = useRouter()

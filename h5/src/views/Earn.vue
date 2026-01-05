@@ -117,7 +117,7 @@
       <span>暂无可用产品</span>
     </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>

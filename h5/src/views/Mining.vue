@@ -190,7 +190,7 @@
         </router-link>
       </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>

@@ -1,23 +1,19 @@
 <template>
-  <div class="square-page">
-    <!-- 标题栏 -->
-    <div class="page-header">
-      <h1 class="page-title">广场</h1>
-      <div class="header-actions">
-        <button class="header-btn" @click="$router.push('/chat')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
-          </svg>
-          <span class="badge" v-if="unreadMessages > 0">{{ unreadMessages > 99 ? '99+' : unreadMessages }}</span>
-        </button>
-        <button class="header-btn" @click="$router.push('/notifications')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-          </svg>
-          <span class="badge" v-if="unreadNotifications > 0">{{ unreadNotifications }}</span>
-        </button>
-      </div>
-    </div>
+  <PageLayout title="广场" :show-back="false">
+    <template #navbar-right>
+      <button class="header-btn" @click="$router.push('/chat')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
+        </svg>
+        <span class="badge" v-if="unreadMessages > 0">{{ unreadMessages > 99 ? '99+' : unreadMessages }}</span>
+      </button>
+      <button class="header-btn" @click="$router.push('/notifications')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span class="badge" v-if="unreadNotifications > 0">{{ unreadNotifications }}</span>
+      </button>
+    </template>
 
     <div class="page-content">
     <!-- 分类Tab -->
@@ -103,11 +99,12 @@
       </svg>
     </router-link>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const activeTab = ref('recommend')
 const unreadMessages = ref(3)
@@ -292,56 +289,18 @@ const handleAvatarError = (e) => {
 </script>
 
 <style scoped>
-/* 页面容器 */
-.square-page {
-  width: 100%;
-  max-width: 428px;
-  height: 100%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(180deg, #181a20 0%, #131518 50%, #0c0e12 100%);
-  overflow: hidden;
-}
-
-/* 标题栏 */
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 16px 12px;
-  background: linear-gradient(180deg, rgba(24, 26, 32, 0.98) 0%, rgba(24, 26, 32, 0.95) 100%);
-}
-
-.page-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0;
-}
-
-.header-actions {
-  display: flex;
-  gap: 8px;
-}
 
 .header-btn {
   position: relative;
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  border: none;
   border-radius: 12px;
   color: var(--text-secondary);
-  transition: all 0.15s ease;
-}
-
-.header-btn:active {
-  transform: scale(0.95);
-  background: rgba(255, 255, 255, 0.1);
 }
 
 .header-btn .badge {
@@ -361,22 +320,10 @@ const handleAvatarError = (e) => {
   justify-content: center;
 }
 
-/* 可滚动内容区 */
 .page-content {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
+  min-height: calc(100vh - 44px);
+  background: linear-gradient(180deg, #181a20 0%, #131518 50%, #0c0e12 100%);
   padding-bottom: 150px;
-}
-
-/* 隐藏滚动条 */
-.page-content::-webkit-scrollbar {
-  display: none;
-}
-
-.page-content {
-  scrollbar-width: none;
 }
 
 /* 分类Tab */

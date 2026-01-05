@@ -1,5 +1,5 @@
 <template>
-  <div class="deposit-page">
+  <PageLayout title="充值" :show-back="true">
     <div class="page-content">
     <!-- 页面描述 -->
     <div class="page-desc">
@@ -75,12 +75,13 @@
       </div>
     </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { alert } from '../utils/alert'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const showCoinModal = ref(false)
 const showHistory = ref(false)

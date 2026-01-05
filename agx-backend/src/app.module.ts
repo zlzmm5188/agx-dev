@@ -17,6 +17,7 @@ import { InviteModule } from './modules/invite/invite.module';
 import { GoldModule } from './modules/gold/gold.module';
 import { SocialModule } from './modules/social/social.module';
 import { SystemModule } from './modules/system/system.module';
+import { TradeModule } from './modules/trade/trade.module';
 
 // 实体
 import {
@@ -122,6 +123,7 @@ import {
     GoldModule,
     SocialModule,
     SystemModule,
+    TradeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

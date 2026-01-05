@@ -1,21 +1,12 @@
 <template>
-  <div class="assets-page">
-    <!-- 固定顶部栏 -->
-    <div class="page-header">
-      <button class="back-btn" @click="$router.back()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M15 18l-6-6 6-6"/>
+  <PageLayout title="我的资产" :show-back="true">
+    <template #navbar-right>
+      <button class="header-btn" @click="$router.push('/orders')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/>
         </svg>
       </button>
-      <h1 class="page-title">我的资产</h1>
-      <div class="header-actions">
-        <button class="header-btn" @click="$router.push('/orders')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/>
-          </svg>
-        </button>
-      </div>
-    </div>
+    </template>
 
     <div class="page-content">
       <!-- 总资产卡片 -->
@@ -111,11 +102,12 @@
         </router-link>
       </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const hideAssets = ref(false)
 const hideSmall = ref(false)
@@ -143,55 +135,6 @@ const filteredAssets = computed(() => {
 </script>
 
 <style scoped>
-.assets-page {
-  width: 100%;
-  max-width: 428px;
-  min-height: 100vh;
-  min-height: 100dvh;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(180deg, #181a20 0%, #131518 50%, #0c0e12 100%);
-}
-
-/* 固定顶部栏 */
-.page-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  padding-top: max(12px, env(safe-area-inset-top));
-  background: linear-gradient(180deg, #1e2228 0%, #181a20 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.back-btn {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #848e9c;
-  background: rgba(255, 255, 255, 0.04);
-  border: none;
-  border-radius: 10px;
-  margin-right: 12px;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.back-btn:active { background: rgba(255, 255, 255, 0.08); }
-
-.page-title {
-  flex: 1;
-  font-size: 18px;
-  font-weight: 600;
-  color: #eaecef;
-  margin: 0;
-}
-
-.header-actions { display: flex; gap: 8px; }
 
 .header-btn {
   width: 36px;
@@ -200,18 +143,15 @@ const filteredAssets = computed(() => {
   align-items: center;
   justify-content: center;
   color: #848e9c;
-  background: rgba(255, 255, 255, 0.04);
+  background: transparent;
   border: none;
   border-radius: 10px;
   -webkit-tap-highlight-color: transparent;
 }
 
-.header-btn:active { background: rgba(255, 255, 255, 0.08); }
-
 .page-content {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  min-height: calc(100vh - 44px);
+  background: linear-gradient(180deg, #181a20 0%, #131518 50%, #0c0e12 100%);
   padding-bottom: max(20px, env(safe-area-inset-bottom));
 }
 

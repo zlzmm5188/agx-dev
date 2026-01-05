@@ -1,21 +1,12 @@
 <template>
-  <div class="chat-page">
-    <!-- 固定顶部栏 -->
-    <div class="page-header">
-      <button class="back-btn" @click="$router.back()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M15 18l-6-6 6-6"/>
+  <PageLayout title="消息" :show-back="true">
+    <template #navbar-right>
+      <button class="header-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
         </svg>
       </button>
-      <h1 class="page-title">消息</h1>
-      <div class="header-actions">
-        <button class="header-btn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>
-          </svg>
-        </button>
-      </div>
-    </div>
+    </template>
 
     <div class="page-content">
       <!-- 搜索栏 -->
@@ -89,11 +80,12 @@
         </div>
       </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const searchQuery = ref('')
 const activeTab = ref('all')
@@ -146,54 +138,6 @@ const rejectRequest = (req) => {
 </script>
 
 <style scoped>
-.chat-page {
-  width: 100%;
-  max-width: 428px;
-  min-height: 100vh;
-  min-height: 100dvh;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(180deg, #181a20 0%, #131518 50%, #0c0e12 100%);
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* 固定顶部栏 */
-.page-header {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  background: linear-gradient(180deg, #1e2228 0%, #181a20 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.back-btn {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #848e9c;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 10px;
-  margin-right: 12px;
-}
-
-.back-btn:active { background: rgba(255, 255, 255, 0.08); }
-
-.page-title {
-  flex: 1;
-  font-size: 18px;
-  font-weight: 600;
-  color: #eaecef;
-  margin: 0;
-}
-
-.header-actions { display: flex; gap: 8px; }
 
 .header-btn {
   width: 36px;
@@ -202,22 +146,16 @@ const rejectRequest = (req) => {
   align-items: center;
   justify-content: center;
   color: #848e9c;
-  background: rgba(255, 255, 255, 0.04);
+  background: transparent;
+  border: none;
   border-radius: 10px;
 }
 
-.header-btn:active { background: rgba(255, 255, 255, 0.08); }
-
 .page-content {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
+  min-height: calc(100vh - 44px);
+  background: linear-gradient(180deg, #181a20 0%, #131518 50%, #0c0e12 100%);
   padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
-
-.page-content::-webkit-scrollbar { display: none; }
-.page-content { scrollbar-width: none; }
 
 .search-bar {
   display: flex;

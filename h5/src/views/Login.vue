@@ -1,5 +1,5 @@
 <template>
-  <div class="login-page">
+  <PageLayout :show-navbar="false" :show-back="false">
     <div class="page-content">
       <!-- Logo -->
       <div class="logo-section">
@@ -57,7 +57,7 @@
         <router-link to="/register">立即注册</router-link>
       </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
@@ -66,6 +66,7 @@ import { useRouter } from 'vue-router'
 import { alert } from '../utils/alert'
 import { useUserStore } from '../stores/user'
 import api from '../utils/api'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const router = useRouter()
 const userStore = useUserStore()

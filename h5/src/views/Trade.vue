@@ -1,7 +1,6 @@
 <template>
-  <div class="trade-page">
-    <!-- 顶部栏 -->
-    <div class="page-header">
+  <PageLayout :show-back="true" :show-navbar="false">
+    <div class="trade-custom-header">
       <button class="back-btn" @click="$router.back()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M15 18l-6-6 6-6"/>
@@ -220,7 +219,6 @@
           <p>暂无订单</p>
         </div>
       </div>
-    </div>
 
     <!-- 杠杆选择弹窗 -->
     <transition name="fade">
@@ -247,7 +245,7 @@
         </div>
       </div>
     </transition>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
@@ -255,6 +253,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { createChart } from 'lightweight-charts'
 import { alert } from '../utils/alert'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const route = useRoute()
 const symbol = ref(route.query.pair?.split('_')[0] || 'BTC')
@@ -304,14 +303,36 @@ const timeframes = [
 ]
 
 // 生成模拟K线数据
-const generateKlineData = (count = 80) => {
+const fetchKlineData = async (symbol, interval = '15m', limit = 80) => {
+  try {
+    const response = await api.market.getKlines({
+      symbol,
+      interval,
+      limit
+    })
+    
+    if (response.success) {
+      // 后端返回格式: [[timestamp, open, high, low, close, volume], ...]
+      return response.data.klines.map(kline => ({
+        time: kline[0] / 1000, // 转换为秒
+        open: kline[1],
+        high: kline[2],
+        low: kline[3],
+        close: kline[4]
+      }))
+    }
+  } catch (error) {
+    console.error('获取K线数据失败:', error)
+  }
+  
+  // 备用模拟数据
   const data = []
   let basePrice = 99000
   const now = Math.floor(Date.now() / 1000)
-  const interval = 60 * 15
+  const timeInterval = 60 * 15
 
-  for (let i = count; i > 0; i--) {
-    const time = now - i * interval
+  for (let i = limit; i > 0; i--) {
+    const time = now - i * timeInterval
     const open = basePrice + (Math.random() - 0.5) * 500
     const close = open + (Math.random() - 0.5) * 800
     const high = Math.max(open, close) + Math.random() * 300
@@ -471,16 +492,14 @@ const initChart = () => {
   resizeObserver.observe(chartContainer.value)
 }
 
-const changeTimeframe = (tf) => {
+const changeTimeframe = async (tf) => {
   activeTimeframe.value = tf
   chartLoading.value = true
-  setTimeout(() => {
-    const klineData = generateKlineData()
-    const volumeData = generateVolumeData(klineData)
-    candleSeries.setData(klineData)
-    volumeSeries.setData(volumeData)
-    chartLoading.value = false
-  }, 200)
+  const klineData = await fetchKlineData(symbol.value + 'USDT', tf)
+  const volumeData = generateVolumeData(klineData)
+  candleSeries.setData(klineData)
+  volumeSeries.setData(volumeData)
+  chartLoading.value = false
 }
 
 // 交易表单
@@ -507,8 +526,32 @@ const setPercent = (p) => {
   amount.value = ((maxAmt * p) / 100).toFixed(4)
 }
 
-const submitOrder = () => {
-  alert(`${tradeDir.value === 'buy' ? '买入' : '卖出'} ${amount.value} ${symbol.value}`)
+const submitOrder = async () => {
+  if (!price.value || !amount.value) {
+    alert('请输入价格和数量')
+    return
+  }
+  
+  try {
+    const response = await api.trade.createOrder({
+      symbol: symbol.value + 'USDT',
+      side: tradeDir.value,
+      type: 'limit', // 暂时默认为限价单
+      price: parseFloat(price.value),
+      quantity: parseFloat(amount.value)
+    })
+    
+    if (response.success) {
+      alert('订单提交成功')
+      // 刷新订单列表
+      await loadOrders()
+    } else {
+      alert(response.message || '下单失败')
+    }
+  } catch (error) {
+    console.error('下单失败:', error)
+    alert('下单失败，请重试')
+  }
 }
 
 // 订单簿功能
@@ -592,10 +635,36 @@ const stopOrderbookUpdates = () => {
 
 // 订单列表
 const orderTab = ref('position')
-const orders = ref([
-  { id: 1, symbol: 'BTC', side: 'buy', price: '99,500.00', time: '14:23:45', status: '未成交' },
-  { id: 2, symbol: 'ETH', side: 'sell', price: '3,580.00', time: '13:15:20', status: '部分成交' }
-])
+const orders = ref([])
+const positions = ref([])
+
+// 加载订单列表
+const loadOrders = async () => {
+  try {
+    const response = await api.trade.getOrders({
+      symbol: symbol.value + 'USDT'
+    })
+    
+    if (response.success) {
+      orders.value = response.data.list.map(order => ({
+        id: order.orderNo,
+        orderNo: order.orderNo,
+        symbol: order.symbol.replace('USDT', ''),
+        side: order.side,
+        price: order.price,
+        quantity: order.quantity,
+        executedQty: order.executedQty,
+        avgPrice: order.avgPrice,
+        status: order.status,
+        statusText: order.statusText,
+        time: new Date(order.createdAt).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        status: order.statusText
+      }))
+    }
+  } catch (error) {
+    console.error('获取订单列表失败:', error)
+  }
+}
 
 // 持仓数据
 const positions = ref([
@@ -612,17 +681,29 @@ const positions = ref([
   }
 ])
 
-const cancelOrder = async (id) => {
-  orders.value = orders.value.filter(o => o.id !== id)
-  await alert('撤单成功')
+const cancelOrder = async (orderNo) => {
+  try {
+    const response = await api.trade.cancelOrder(orderNo)
+    if (response.success) {
+      alert('撤单成功')
+      // 刷新订单列表
+      await loadOrders()
+    } else {
+      alert(response.message || '撤单失败')
+    }
+  } catch (error) {
+    console.error('撤单失败:', error)
+    alert('撤单失败，请重试')
+  }
 }
 
-onMounted(() => {
-  setTimeout(() => {
-    initChart()
+onMounted(async () => {
+  setTimeout(async () => {
+    await initChart()
     generateOrderbookData()
     startPriceUpdates()
     startOrderbookUpdates()
+    await loadOrders() // 加载订单列表
   }, 100)
 })
 
@@ -645,23 +726,16 @@ watch(() => route.query.pair, (newPair) => {
 </script>
 
 <style scoped>
-.trade-page {
-  width: 100%;
-  max-width: 428px;
-  min-height: 100vh;
-  min-height: 100dvh;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  background: #0B0E11;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.page-header {
-  flex-shrink: 0;
+.trade-custom-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
   display: flex;
   align-items: center;
   padding: 10px 16px;
+  padding-top: calc(10px + env(safe-area-inset-top));
   background: #181A20;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
@@ -735,7 +809,7 @@ watch(() => route.query.pair, (newPair) => {
 .change.down { background: rgba(246, 70, 93, 0.15); }
 
 .page-content {
-  flex: 1;
+  padding-top: calc(56px + env(safe-area-inset-top));
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;

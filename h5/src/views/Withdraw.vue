@@ -1,5 +1,5 @@
 <template>
-  <div class="withdraw-page">
+  <PageLayout title="提币" :show-back="true">
     <div class="page-content">
     <!-- 页面描述 -->
     <div class="page-desc">
@@ -91,11 +91,12 @@
       <button class="submit-btn" @click="handleWithdraw">确认提现</button>
     </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const showCoinModal = ref(false)
 const selectedNetwork = ref('TRC20')

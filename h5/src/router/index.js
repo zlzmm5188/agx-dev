@@ -24,8 +24,14 @@ const routes = [
   {
     path: '/trade',
     name: 'Trade',
-    component: () => import('../views/Trade.vue'),
+    component: () => import('../views/trade/Trade.vue'),
     meta: { tabBar: true, title: '交易' }
+  },
+  {
+    path: '/trade/:symbol',
+    name: 'TradeSymbol',
+    component: () => import('../views/trade/Trade.vue'),
+    meta: { title: '交易' }
   },
   {
     path: '/earn',
@@ -60,8 +66,14 @@ const routes = [
   {
     path: '/ieo',
     name: 'IEO',
-    component: () => import('../views/IEO.vue'),
+    component: () => import('../views/trade/IEO.vue'),
     meta: { title: '新币发行' }
+  },
+  {
+    path: '/trade/ieo/:id',
+    name: 'IEODetail',
+    component: () => import('../views/trade/IEO.vue'),
+    meta: { title: '新币发行详情' }
   },
   {
     path: '/gold',

@@ -89,6 +89,41 @@ const homePageRoutes = [
     component: () => import('@/views/agx/userDetail.vue'),
     meta: { title: '用户详情', hidden: true }
   },
+  // AGX 交易对管理
+  {
+    name: 'agxTradingPairs',
+    path: '/agx/tradingPairs',
+    component: () => import('@/views/trade/TradingPairs.vue'),
+    meta: { title: '交易对管理', hidden: true }
+  },
+  // AGX 新币发行管理
+  {
+    name: 'agxCoinIssues',
+    path: '/agx/coinIssues',
+    component: () => import('@/views/trade/CoinIssues.vue'),
+    meta: { title: '新币发行管理', hidden: true }
+  },
+  // AGX 敏感词管理
+  {
+    name: 'agxSensitiveWords',
+    path: '/agx/sensitiveWords',
+    component: () => import('@/views/square/SensitiveWords.vue'),
+    meta: { title: '敏感词管理', hidden: true }
+  },
+  // AGX 帖子审核
+  {
+    name: 'agxPostReview',
+    path: '/agx/postReview',
+    component: () => import('@/views/square/PostReview.vue'),
+    meta: { title: '帖子审核', hidden: true }
+  },
+  // AGX 私信管理
+  {
+    name: 'agxPrivateMessage',
+    path: '/agx/privateMessage',
+    component: () => import('@/views/square/PrivateMessage.vue'),
+    meta: { title: '私信管理', hidden: true }
+  },
 ]
 
 export const homePage = {

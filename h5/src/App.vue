@@ -88,6 +88,7 @@ body {
   width: 100%;
   height: 100vh;
   overflow: hidden;
+  background: var(--bg-primary, #0B0E11);
 }
 
 /* 内容区域 */

@@ -1,5 +1,5 @@
 <template>
-  <div class="post-detail-page">
+  <PageLayout :show-navbar="false" :show-back="false">
     <!-- 头部 -->
     <div class="page-header">
       <button class="back-btn" @click="$router.back()">
@@ -104,12 +104,13 @@
         </svg>
       </button>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const route = useRoute()
 

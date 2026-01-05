@@ -1,16 +1,5 @@
 <template>
-  <div class="settings-page">
-    <!-- 固定顶部栏 -->
-    <div class="page-header">
-      <button class="back-btn" @click="$router.back()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M15 18l-6-6 6-6"/>
-        </svg>
-      </button>
-      <h1 class="page-title">设置</h1>
-      <div class="header-actions"></div>
-    </div>
-
+  <PageLayout title="设置" :show-back="true">
     <div class="page-content">
     <div class="settings-section">
       <div class="section-title">通用设置</div>
@@ -140,12 +129,13 @@
       <button class="logout-btn" @click="handleLogout">退出登录</button>
     </div>
     </div>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { alert } from '../utils/alert'
+import PageLayout from '../components/layout/PageLayout.vue'
 
 const darkMode = ref(true)
 const pushNotify = ref(true)

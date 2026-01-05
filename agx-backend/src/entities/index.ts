@@ -19,11 +19,23 @@ export { PoolHolding } from './pool-holding.entity';
 export { ContractConfig } from './contract-config.entity';
 export { ContractOrder } from './contract-order.entity';
 
+// ===== 交易模块（新增） =====
+export { TradingPair } from './trading-pair.entity';
+export { SpotOrder } from './spot-order.entity';
+export { CoinIssue } from './coin-issue.entity';
+export { CoinSubscription } from './coin-subscription.entity';
+
 // ===== 行情模块（新增） =====
 export { Asset } from './asset.entity';
 export { AssetTicker } from './asset-ticker.entity';
 export { GoldPrice } from './gold-price.entity';
 export { GoldProduct } from './gold-product.entity';
+
+// ===== 交易模块（新增） =====
+export { TradingPair } from './trading-pair.entity';
+export { SpotOrder } from './spot-order.entity';
+export { CoinIssue } from './coin-issue.entity';
+export { CoinSubscription } from './coin-subscription.entity';
 
 // ===== 广场模块（新增） =====
 export { Post } from './post.entity';
@@ -31,6 +43,9 @@ export { Comment } from './comment.entity';
 export { Like } from './like.entity';
 export { Follow } from './follow.entity';
 export { Topic } from './topic.entity';
+export { SensitiveWord } from './sensitive-word.entity';
+export { PostReview } from './post-review.entity';
+export { PrivateMessage } from './private-message.entity';
 
 // ===== 邀请与排行（新增） =====
 export { InviteReward } from './invite-reward.entity';
