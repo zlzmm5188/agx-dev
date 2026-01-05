@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import PageLayout from '../components/layout/PageLayout.vue'
 import { api } from '../utils/api'
@@ -66,22 +66,44 @@ const tabs = [
   { label: 'USDT', value: 'usdt' }
 ]
 
+// 解析交易对符号
+const parseSymbol = (symbol) => {
+  // 支持的计价币种，按长度降序排列
+  const quoteCurrencies = ['USDT', 'BTC', 'ETH', 'BNB']
+  
+  for (const quote of quoteCurrencies) {
+    if (symbol.endsWith(quote)) {
+      return {
+        baseCoin: symbol.slice(0, -quote.length),
+        quoteCoin: quote
+      }
+    }
+  }
+  
+  // 如果都不匹配，默认返回USDT
+  return {
+    baseCoin: symbol,
+    quoteCoin: 'USDT'
+  }
+}
+
 // 获取交易对列表
 const loadPairs = async () => {
   try {
     // 从行情API获取数据
     const response = await api.market.getTickers('crypto', activeTab.value)
     if (response.success) {
-      pairs.value = response.data.list.map(item => ({
-        symbol: item.symbol,
-        baseCoin: item.symbol.replace('USDT', '').replace('BTC', '').replace('ETH', '').replace('BNB', ''),
-        quoteCoin: item.symbol.includes('USDT') ? 'USDT' : 
-                  item.symbol.includes('BTC') ? 'BTC' : 
-                  item.symbol.includes('ETH') ? 'ETH' : 'BNB',
-        lastPrice: item.lastPrice,
-        priceChangePercent: parseFloat(item.priceChangePercent || 0),
-        volume: item.volume
-      }))
+      pairs.value = response.data.list.map(item => {
+        const { baseCoin, quoteCoin } = parseSymbol(item.symbol)
+        return {
+          symbol: item.symbol,
+          baseCoin,
+          quoteCoin,
+          lastPrice: item.lastPrice,
+          priceChangePercent: parseFloat(item.priceChangePercent || 0),
+          volume: item.volume
+        }
+      })
     }
   } catch (error) {
     console.error('获取交易对失败:', error)
@@ -135,6 +157,11 @@ const selectPair = (pair) => {
 }
 
 onMounted(() => {
+  loadPairs()
+})
+
+// 监听标签页切换
+watch(activeTab, () => {
   loadPairs()
 })
 </script>
@@ -266,4 +293,3 @@ onMounted(() => {
   font-size: 11px;
 }
 </style>
-</template>
