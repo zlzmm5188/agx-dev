@@ -130,7 +130,7 @@ if (rememberedUsername) {
 <style scoped>
 .login-page {
   width: 100%;
-  max-width: 100vw;
+  max-width: 428px;
   min-height: 100vh;
   min-height: 100dvh; /* 动态视口高度，适配移动端浏览器工具栏 */
   margin: 0 auto;

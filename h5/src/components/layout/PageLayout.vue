@@ -69,9 +69,10 @@ const handleBack = () => {
 
 <style scoped>
 .page-layout {
-  width: 100vw;
-  max-width: 100vw;
+  width: 100%;
+  max-width: 428px;
   min-height: 100vh;
+  margin: 0 auto;
   background: var(--bg-primary, #0B0E11);
   overflow-x: hidden;
 }

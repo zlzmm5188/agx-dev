@@ -255,7 +255,7 @@ const openStakeModal = async (plan) => {
 <style scoped>
 .mining-page {
   width: 100%;
-  max-width: 100vw;
+  max-width: 428px;
   min-height: 100vh;
   min-height: 100dvh;
   margin: 0 auto;

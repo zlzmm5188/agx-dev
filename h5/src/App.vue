@@ -85,10 +85,10 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  max-width: 100vw;
+  width: 100%;
   height: 100vh;
   overflow: hidden;
+  background: var(--bg-primary, #0B0E11);
 }
 
 /* 内容区域 */
@@ -96,8 +96,7 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  max-width: 100vw;
+  width: 100%;
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;

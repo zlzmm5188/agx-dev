@@ -146,7 +146,7 @@ const restUsers = computed(() => allUsers.value.slice(3))
 <style scoped>
 .ranking-page {
   width: 100%;
-  max-width: 100vw;
+  max-width: 428px;
   height: 100%;
   margin: 0 auto;
   display: flex;

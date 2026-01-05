@@ -490,7 +490,7 @@ const historyList = ref([
 /* 页面容器 */
 .ieo-page {
   width: 100%;
-  max-width: 100vw;
+  max-width: 428px;
   min-height: 100vh;
   min-height: 100dvh;
   margin: 0 auto;

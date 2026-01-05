@@ -195,7 +195,7 @@ const sendComment = () => {
 <style scoped>
 .post-detail-page {
   width: 100%;
-  max-width: 100vw;
+  max-width: 428px;
   height: 100%;
   margin: 0 auto;
   display: flex;
